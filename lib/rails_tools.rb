@@ -1,0 +1,3 @@
+module RailsTools
+  # Your code goes here...
+end
