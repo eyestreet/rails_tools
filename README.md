@@ -7,6 +7,25 @@ This is a collection of rake tasks that we use on multiple Rails projects.  Righ
 
 2. Change log generation via Pivotal Tracker
 
+Installation
+------------
+Since this is a (for now) non-published gem hosted privately on our GitHub account you need to add this line to your Gemfile:
+
+    gem 'rails_tools', :git => 'https://github.com/eyestreet/rails_tools'
+
+And when you run `bundle install` you'll need to enter your GitHub username and password.
+
+Then you need to add this to your Rakefile
+
+    require 'rails_tools/tasks'
+
+If you have `require 'tasks/rails'` in the file, it must go **below** that or you will get the error
+
+    undefined method `==' for class `ActiveSupport::BasicObject'
+
+Something having to do with what or how the Pivotal Tracker gem loads ActiveSupport::BasicObject.
+
+Installation instructions might be a little different for Rails 3.  I haven't tried it yet.  Please update this file if you do.
 
 Heroku Deploy Tasks
 -------------------
