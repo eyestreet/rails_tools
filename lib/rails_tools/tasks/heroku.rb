@@ -1,4 +1,6 @@
 namespace :rails_tools do
+  puts
+
   PRODUCTION_APP = ENV['APP']
   PRODUCTION_BRANCH = ENV['BRANCH'] || 'master'
   PRODUCTION_REMOTE = ENV['REMOTE'] || 'production'
@@ -7,17 +9,25 @@ namespace :rails_tools do
   STAGING_REMOTE = ENV['REMOTE'] || 'staging'
 
   # Deploy and rollback on Heroku in staging and production
-  task :staging, [:branch] => [:set_staging_app, :push]
-  task :staging_migrations, [:branch] => [:set_staging_app, :push, :migrate]
+  desc "Deploys branch ENV['BRANCH'] (default: develop) to ENV['APP']"
+  task :staging => [:set_staging_app, :push]
+
+  desc "Deploys branch ENV['BRANCH'] (default: develop) to ENV['APP'] and runs migrations"
+  task :staging_migrations => [:set_staging_app, :push, :migrate]
+
   task :staging_rollback => [:set_staging_app, :off, :push_previous, :on]
 
-  task :production, [:branch] => [:set_production_app, :push]
+  desc "Deploys branch ENV['BRANCH'] (default: master) to ENV['APP']"
+  task :production => [:set_production_app, :push]
+
+  desc "Deploys branch ENV['BRANCH'] (default: master) to ENV['APP'] and runs migrations"
   task :production_migrations => [:set_production_app, :push, :migrate]
+
   task :production_rollback => [:set_production_app, :off, :push_previous, :on]
 
-  task :set_staging_app, [:branch] do |t, args|
+  task :set_staging_app do
     APP = STAGING_APP
-    BRANCH = args[:branch] || STAGING_BRANCH
+    BRANCH = STAGING_BRANCH
     GIT_REMOTE = STAGING_REMOTE
   end
 
@@ -59,6 +69,6 @@ namespace :rails_tools do
 
   def log_and_execute(cmd)
     puts cmd
-    # puts `#{cmd}`
+    puts `#{cmd}`
   end
 end

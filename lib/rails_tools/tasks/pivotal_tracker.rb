@@ -1,6 +1,8 @@
+require 'pivotal_tracker'
+
 namespace :rails_tools do
-  desc "Given at least one commit hash or tag prints the Pivotal Tracker story titles and owners from all the stories referenced in the commits contained within"
-  task :changelog, [:from, :to] => :environment do |t, args|
+  desc "Given at least one commit hash or tag prints the Pivotal Tracker story titles and owners from all the stories referenced in the commits contained within. Must set PT_CLIENT_TOKEN (a Pivotal Tracker client token that has access to the project) and PROJECT_ID (the PT project id)"
+  task :changelog, [:from, :to] do |t, args|
     from = args[:from]
     to   = args[:to]
 
@@ -8,8 +10,13 @@ namespace :rails_tools do
       abort "Must specify at least a starting hash or tag.\n\n\trake rails_tools:changelog[tag1,tag2]"
     end
 
-    PivotalTracker::Client.token = ENV['PT_CLIENT_TOKEN'] #v'c0c1cd5788c9f53f2d5ae31b1506f7ac' # staff@eyestreetresearch.com
-    project_id = ENV['PROJECT_ID'] # 239055
+    client_token = ENV['CLIENT_TOKEN']
+    project_id   = ENV['PROJECT_ID']
+
+    fail "Client token is required. Set using environment variable CLIENT_TOKEN" if client_token.blank?
+    fail "Project ID is required. Set using environment variable PROJECT_ID" if project_id.blank?
+
+    PivotalTracker::Client.token = client_token
     project = PivotalTracker::Project.find(project_id)
 
     commits = `git log #{from}..#{to} --no-merges --pretty=format:'%s'`.split("\n")
