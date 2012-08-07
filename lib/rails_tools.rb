@@ -1,3 +1,3 @@
 module RailsTools
-  # Your code goes here...
+  # This space intentionally left blank.
 end
